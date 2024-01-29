@@ -88,7 +88,16 @@ declare namespace API {
 
   type ClusterList = ClusterItem[];
 
-  type modalType = 'upgrade' | 'addZone' | 'scaleServer';
+  type ModalType =
+    | 'upgrade'
+    | 'addZone'
+    | 'scaleServer'
+    | 'modifyUnit'
+    | 'changePassword'
+    | 'logReplay'
+    | 'activateTenant'
+    | 'switchTenant'
+    | 'upgradeTenant';
 
   type QueryMetricsType = {
     groupLabels: string[];
@@ -101,6 +110,22 @@ declare namespace API {
 
   type EventObjectType = 'OBCLUSTER' | 'OBTENANT' | 'OBCLUSTER_OVERVIEW';
 
+  type TenantRole = 'Primary' | 'Standby';
+
+  type JobType = 'FULL' | 'INCR' | 'CLEAN' | 'ARCHIVE';
+
+  type ReplicaDetailType = {
+    iopsWeight: number;
+    logDiskSize: string;
+    maxIops: number;
+    memorySize: string;
+    cpuCount: number;
+    minIops: number;
+    priority: number;
+    type: string;
+    zone: string;
+  };
+
   interface TenantDetail {
     charset: string;
     clusterName: string;
@@ -110,23 +135,33 @@ declare namespace API {
     namespace: string;
     status: string;
     tenantName: string;
-    tenantRole: string;
-    topology: [
-      {
-        iopsWeight: 0;
-        logDiskSize: string;
-        maxCPU: string;
-        maxIops: 0;
-        memorySize: string;
-        minCPU: string;
-        minIops: 0;
-        priority: 0;
-        type: string;
-        zone: string;
-      },
-    ];
-    unitNumber: 0;
+    tenantRole: TenantRole;
+    topology: ReplicaDetailType[];
+    unitNumber: number;
   }
+
+  interface BackupPolicy {
+    destType: string;
+    archivePath: string;
+    bakDataPath: string;
+    scheduleType: string;
+    scheduleTime: string;
+    scheduleDates: {
+      backupType: string;
+      day: number;
+    }[];
+  }
+
+  interface BackupJob {
+    encryptionSecret: string;
+    endTime: string;
+    name: string;
+    path: string;
+    startTime: string;
+    status: string;
+    statusInDatabase: string;
+    type: string;
+  }[]
 
   type NamespaceAndName = {
     ns: string;
@@ -162,7 +197,7 @@ declare namespace API {
     unitConfig: {
       iopsWeight?: number;
       logDiskSize?: string;
-      cupNumber: number;
+      cpuCount: number;
       maxIops?: number;
       memorySize: string;
       minIops?: number;
@@ -181,9 +216,37 @@ declare namespace API {
     data: TenantDetail[];
   }
 
+  interface BackupPolicyResponse extends CommonResponse {
+    data: BackupPolicy;
+  }
+
+  interface BackupJobsResponse extends CommonResponse {
+    data:BackupJob[];
+  }
+
   interface TenantInfoType extends CommonResponse {
     data: {
       clusterName: string;
+      createTime: string;
+      locality: string;
+      name: string;
+      namespace: string;
+      primaryTenant: string;
+      restoreSource: {
+        archiveSource: string;
+        bakDataSource: string;
+        bakEncryptionSecret: string;
+        ossAccessSecret: string;
+        type: string;
+        until: string;
+      };
+      rootCredential: string;
+      standbyROCredentail: string;
+      status: string;
+      tenantName: string;
+      tenantRole: TenantRole;
+      topology: ReplicaDetailType[];
+      unitNumber: number;
     };
   }
 
@@ -203,10 +266,51 @@ declare namespace API {
   type UnitConfig = {
     iopsWeight: number;
     logDiskSize: string;
-    maxCPU: string;
     maxIops: number;
     memorySize: string;
-    minCPU: string;
+    cpuCount: number;
     minIops: number;
+  };
+
+  type PatchTenantConfiguration = {
+    unitConfig?: {
+      pools?: {
+        priority: number;
+        zone: string;
+      }[];
+      unitConfig?: UnitConfig;
+    };
+    unitNum?: number;
+  };
+
+  type InfoType = {
+    charset: string;
+    clusterName: string;
+    tenantName: string;
+    tenantRole: TenantRole;
+    unitNumber: number;
+    status: string;
+    name: string;
+    namespace: string;
+    locality: string;
+    style?: any;
+  };
+  interface TenantsListResponse extends CommonResponse {
+    data: TenantDetail[];
+  }
+
+  interface TenantBasicInfoResponse extends CommonResponse {
+    data: TenantBasicInfo;
+  }
+
+  type TenantBasicInfo = {
+    info: InfoType;
+    source?: {
+      primaryTenant?: string;
+      archiveSource?: string;
+      bakDataSource?: string;
+      until?: string;
+    };
+    replicas?: ReplicaDetailType[];
   };
 }
