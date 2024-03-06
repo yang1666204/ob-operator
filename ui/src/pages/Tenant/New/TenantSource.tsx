@@ -176,11 +176,6 @@ export default function TenantSource({ form, clusterName }: TenantSourceProps) {
               </Col>
               <Form.Item noStyle dependencies={[['source', 'restore', 'type']]}>
                 {({ getFieldValue }) => {
-                  console.log(
-                    'getFieldValue',
-                    getFieldValue(['source', 'restore', 'type']),
-                  );
-
                   if (getFieldValue(['source', 'restore', 'type']) !== 'NFS') {
                     return (
                       <>
