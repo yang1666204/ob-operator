@@ -19,7 +19,7 @@ interface RolesProps {
 export default function Roles({
   allRoles,
   refreshRoles,
-  existingRoles,
+  existingRoles
 }: RolesProps) {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const access = useAccess();
@@ -32,98 +32,98 @@ export default function Roles({
         message.success(
           intl.formatMessage({
             id: 'src.pages.Access.70280437',
-            defaultMessage: '删除成功！',
-          }),
+            defaultMessage: '删除成功！'
+          })
         );
         refreshRoles();
       }
-    },
+    }
   });
   const columns: TableProps<AcRole>['columns'] = [
-    {
-      title: intl.formatMessage({
-        id: 'src.pages.Access.3D6FBFA4',
-        defaultMessage: '角色',
-      }),
-      key: 'name',
-      dataIndex: 'name',
-    },
-    {
-      title: intl.formatMessage({
-        id: 'src.pages.Access.14CE430B',
-        defaultMessage: '描述',
-      }),
-      key: 'description',
-      dataIndex: 'description',
-    },
-    {
-      title: intl.formatMessage({
-        id: 'src.pages.Access.C04CE1B8',
-        defaultMessage: '权限',
-      }),
-      key: 'policies',
-      dataIndex: 'policies',
-      render: (permission) => {
-        return (
-          <Space size={[8, 16]} wrap>
-            {permission.map((item: AcPolicy) => (
-              <span>
+  {
+    title: intl.formatMessage({
+      id: 'src.pages.Access.3D6FBFA4',
+      defaultMessage: '角色'
+    }),
+    key: 'name',
+    dataIndex: 'name'
+  },
+  {
+    title: intl.formatMessage({
+      id: 'src.pages.Access.14CE430B',
+      defaultMessage: '描述'
+    }),
+    key: 'description',
+    dataIndex: 'description'
+  },
+  {
+    title: intl.formatMessage({
+      id: 'src.pages.Access.C04CE1B8',
+      defaultMessage: '权限'
+    }),
+    key: 'policies',
+    dataIndex: 'policies',
+    render: (permission) => {
+      return (
+        <Space size={[8, 16]} wrap>
+            {permission.map((item: AcPolicy) =>
+          <span>
                 {item.domain}:{item.action}
               </span>
-            ))}
-          </Space>
-        );
-      },
-    },
-    {
-      title: intl.formatMessage({
-        id: 'src.pages.Access.3CF8CEC0',
-        defaultMessage: '操作',
-      }),
-      key: 'action',
-      render: (_, record) => {
-        const disabled = record.name === 'admin' || !access.acwrite;
-        return (
-          <Space>
+          )}
+          </Space>);
+
+    }
+  },
+  {
+    title: intl.formatMessage({
+      id: 'src.pages.Access.3CF8CEC0',
+      defaultMessage: '操作'
+    }),
+    key: 'action',
+    render: (_, record) => {
+      const disabled = record.name === 'admin' || !access.acwrite;
+      return (
+        <Space>
             <Button
-              style={{ paddingLeft: 0 }}
-              onClick={() => handleEdit(record)}
-              disabled={disabled}
-              type="link"
-            >
+            style={{ paddingLeft: 0 }}
+            onClick={() => handleEdit(record)}
+            disabled={disabled}
+            type="link">
+
               {intl.formatMessage({
-                id: 'src.pages.Access.D2244128',
-                defaultMessage: '编辑',
-              })}
+              id: 'src.pages.Access.D2244128',
+              defaultMessage: '编辑'
+            })}
             </Button>
             <Button
-              disabled={disabled || existingRoles.includes(record.name)}
-              type="link"
-              style={
-                disabled || existingRoles.includes(record.name)
-                  ? {}
-                  : { color: '#ff4b4b' }
-              }
-              onClick={() =>
-                showDeleteConfirm({
-                  title: intl.formatMessage({
-                    id: 'src.pages.Access.CF6370DC',
-                    defaultMessage: '你确定要删除该角色吗？',
-                  }),
-                  onOk: () => deleteRole(record.name),
-                })
-              }
-            >
+            disabled={disabled || existingRoles.includes(record.name)}
+            type="link"
+            style={
+            disabled || existingRoles.includes(record.name) ?
+            {} :
+            { color: '#ff4b4b' }}
+
+            onClick={() =>
+            showDeleteConfirm({
+              title: intl.formatMessage({
+                id: 'src.pages.Access.CF6370DC',
+                defaultMessage: '你确定要删除该角色吗？'
+              }),
+              onOk: () => deleteRole(record.name)
+            })}>
+
+
               {intl.formatMessage({
-                id: 'src.pages.Access.F3487256',
-                defaultMessage: '删除',
-              })}
+              id: 'src.pages.Access.F3487256',
+              defaultMessage: '删除'
+            })}
             </Button>
-          </Space>
-        );
-      },
-    },
-  ];
+          </Space>);
+
+    }
+  }];
+
 
   const handleEdit = (editData: AcRole) => {
     setEditData(editData);
@@ -133,13 +133,14 @@ export default function Roles({
   return (
     <div>
       <Table dataSource={allRoles} rowKey={'name'} columns={columns} />
+      <h1>{intl.formatMessage({ id: "src.pages.Access.23B7EFF5", defaultMessage: "中文" })}</h1>
       <HandleRoleModal
         visible={modalVisible}
         editValue={editData}
         setVisible={setModalVisible}
         successCallback={refreshRoles}
-        type={Type.EDIT}
-      />
-    </div>
-  );
+        type={Type.EDIT} />
+
+    </div>);
+
 }
